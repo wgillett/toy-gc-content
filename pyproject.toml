@@ -1,0 +1,29 @@
+[project]
+name = "toy-gc-content"
+version = "0.1.0"
+authors = [{ name = "Walter Gillett" }]
+description = "A toy package to calculate GC content in DNA sequences"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["boto3==1.38.4"]
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.mypy]
+python_version = "3.12"  # Matching project's Python version
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+strict_optional = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

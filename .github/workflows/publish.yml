@@ -1,0 +1,46 @@
+---
+name: Publish to GitHub Packages
+
+"on":
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:  # enable manual trigger in GitHub UI
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install build tools
+        run: |
+          uv pip install --system build twine
+
+      - name: Build the package
+        run: python -m build
+
+      - name: Upload to TestPyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
